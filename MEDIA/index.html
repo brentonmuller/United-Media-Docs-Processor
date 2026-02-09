@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Media Super Assistant February 2026</title>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        :root { --media-blue: #005aab; }
+        body { font-family: -apple-system, system-ui, sans-serif; background: #f0f4f7; padding: 15px; margin: 0; }
+        
+        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(240, 244, 247, 0.98); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+        .pin-box { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; border-top: 5px solid var(--media-blue); }
+        .pin-input { font-size: 24px; width: 120px; text-align: center; letter-spacing: 8px; padding: 10px; border: 2px solid #ddd; border-radius: 8px; margin: 15px 0; outline: none; }
+        
+        .card { background: white; max-width: 650px; margin: 0 auto; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 8px solid var(--media-blue); display: none; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .full { grid-column: span 2; }
+        label { display: block; font-size: 11px; font-weight: bold; color: #666; text-transform: uppercase; margin-bottom: 5px; }
+        input, select { width: 100%; padding: 14px; border: 1px solid #ccc; border-radius: 10px; font-size: 16px; box-sizing: border-box; background: white; }
+        .form-selector { margin-top: 25px; background: #f9f9f9; padding: 15px; border-radius: 10px; border: 1px solid #ddd; }
+        .form-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px; }
+        .form-item input[type="checkbox"] { width: 26px; height: 26px; margin-right: 15px; accent-color: var(--media-blue); }
+        .btn-run { width: 100%; padding: 20px; background: var(--media-blue); color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; margin-top: 25px; cursor: pointer; }
+        #status { text-align: center; margin-top: 20px; font-weight: bold; color: var(--media-blue); font-size: 13px; }
+    </style>
+</head>
+<body>
+
+<div id="auth-overlay">
+    <div class="pin-box">
+        <h3 style="margin-top:0; color: var(--media-blue);">Media Super Access</h3>
+        <p style="font-size: 13px; color: #666;">Enter Admin PIN to continue</p>
+        <input type="password" id="pin-entry" class="pin-input" maxlength="4" placeholder="••••">
+        <br>
+        <button onclick="checkPin()" style="background: var(--media-blue); color: white; border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-weight: bold;">Unlock Assistant</button>
+        <div id="pin-error" style="color: red; font-size: 12px; margin-top: 10px; display: none;">Incorrect PIN</div>
+    </div>
+</div>
+
+<div class="card" id="main-ui">
+    <h2 style="color:var(--media-blue); text-align:center; margin-top:0;">🎥 Media Super Assistant</h2>
+    
+    <div class="grid">
+        <div class="full"><label>Member Number</label><input type="text" id="m_no"></div>
+        <div><label>Title</label>
+            <select id="title_select">
+                <option value="Mr">Mr</option>
+                <option value="Mrs">Mrs</option>
+                <option value="Ms">Ms</option>
+                <option value="Miss">Miss</option>
+            </select>
+        </div>
+        <div><label>Given Name(s)</label><input type="text" id="gn"></div>
+        <div class="full"><label>Family Name</label><input type="text" id="fn"></div>
+        <div class="full"><label>Date of Birth</label><input type="date" id="dob"></div>
+        <div class="full"><label>Tax File Number</label><input type="tel" id="tfn" placeholder="9 digits"></div>
+        <div class="full"><label>Mobile Number</label><input type="tel" id="mob"></div>
+        <div class="full"><label>Email Address</label><input type="email" id="eml"></div>
+        <div class="full"><label>Street Address</label><input type="text" id="addr"></div>
+        <div><label>Suburb</label><input type="text" id="sub"></div>
+        <div><label>State</label>
+            <select id="st">
+                <option value="QLD">QLD</option>
+                <option value="NSW">NSW</option>
+                <option value="VIC">VIC</option>
+                <option value="WA">WA</option>
+                <option value="SA">SA</option>
+                <option value="TAS">TAS</option>
+                <option value="ACT">ACT</option>
+                <option value="NT">NT</option>
+            </select>
+        </div>
+        <div class="full"><label>Postcode</label><input type="tel" id="pc"></div>
+    </div>
+
+    <div class="form-selector">
+        <label>Select Required Forms:</label>
+        <div id="formList">
+            <label class="form-item"><input type="checkbox" value="i-want-my-super-paid-into-media-super.pdf" checked> Choice of Fund Form</label>
+        </div>
+    </div>
+
+    <button class="btn-run" onclick="runBatch()">🚀 Generate Bundle</button>
+    <div id="status"></div>
+</div>
+
+<script>
+    function checkPin() {
+        const pin = document.getElementById('pin-entry').value;
+        if (pin === "1234") {
+            document.getElementById('auth-overlay').style.display = 'none';
+            document.getElementById('main-ui').style.display = 'block';
+        } else {
+            document.getElementById('pin-error').style.display = 'block';
+        }
+    }
+
+    async function runBatch() {
+        const selected = Array.from(document.querySelectorAll('#formList input:checked'));
+        if (selected.length === 0) return alert("Select at least one form.");
+
+        const status = document.getElementById('status');
+        const zip = new JSZip();
+
+        const gn = document.getElementById('gn').value.trim();
+        const fn = document.getElementById('fn').value.trim();
+        const fullName = `${gn} ${fn}`.trim() || "Media_Super_Member";
+        const tfn = document.getElementById('tfn').value.replace(/\s/g, '');
+
+        // Handle DOB splitting
+        const dobVal = document.getElementById('dob').value;
+        const [dobY, dobM, dobD] = dobVal ? dobVal.split('-') : ['', '', ''];
+
+        // Handle Current Date (Step 3)
+        const now = new Date();
+        const curD = String(now.getDate()).padStart(2, '0');
+        const curM = String(now.getMonth() + 1).padStart(2, '0');
+        const curYYYY = String(now.getFullYear());
+
+        const data = {
+            m: document.getElementById('m_no').value,
+            gn: gn,
+            fn: fn,
+            title: document.getElementById('title_select').value,
+            mob: document.getElementById('mob').value,
+            eml: document.getElementById('eml').value,
+            addr: document.getElementById('addr').value,
+            sub: document.getElementById('sub').value,
+            st: document.getElementById('st').value,
+            pc: document.getElementById('pc').value
+        };
+
+        try {
+            for (const item of selected) {
+                const fileName = item.value;
+                status.innerText = `Processing: ${fileName}...`;
+                
+                // Assuming files are in a /forms/MEDIA/ subfolder
+                const response = await fetch(`./forms/MEDIA/${fileName}?t=${Date.now()}`);
+                if (!response.ok) throw new Error(`File ${fileName} not found.`);
+
+                const pdfDoc = await PDFLib.PDFDocument.load(await response.arrayBuffer());
+                const form = pdfDoc.getForm();
+
+                const masterMap = {
+                    'Title_8138573': data.title,
+                    '8138573-Given_Names': data.gn,
+                    '8138573-Family_Name': data.fn,
+                    '8138573-member_number': data.m,
+                    // TFN Split
+                    '8138573-TFN1': tfn.substring(0,3),
+                    '8138573-TFN2': tfn.substring(3,6),
+                    '8138573-TFN3': tfn.substring(6,9),
+                    // Step 3 Date
+                    '8138576-Sign_Date_Day': curD,
+                    '8138576-Sign_Date_Month': curM,
+                    '8138576-Sign_Date_Year': curYYYY,
+                    // Generic mappings (Common field names in super forms)
+                    'Residential address': data.addr,
+                    'Suburb/town': data.sub,
+                    'State': data.st,
+                    'Postcode': data.pc,
+                    'Mobile': data.mob,
+                    'Email address': data.eml
+                };
+
+                Object.entries(masterMap).forEach(([k, v]) => {
+                    try { form.getTextField(k).setText(v); } catch(e) {}
+                });
+
+                zip.file(`${fullName} - ${fileName}`, await pdfDoc.save());
+            }
+
+            status.innerText = "📦 Creating Pack...";
+            const blob = await zip.generateAsync({type:"blob"});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; 
+            a.download = `${fullName}_MediaSuper.zip`;
+            a.click();
+            status.innerText = "✅ Done! Pack Downloaded.";
+        } catch (err) {
+            status.style.color = "red";
+            status.innerText = `❌ ${err.message}`;
+        }
+    }
+</script>
+</body>
+</html>
