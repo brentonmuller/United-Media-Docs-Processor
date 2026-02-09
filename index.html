@@ -131,26 +131,34 @@
                 const form = pdfDoc.getForm();
 
                 const masterMap = {
-                    // Universal Names & Specific ID Fixes
-                    'Given names': d.gn, 'First names': d.gn, 'First name': d.gn, 'Given Names': d.gn, '8138573-Given_Names': d.gn,
-                    'Family name': d.fn, 'Family Name': d.fn, '8138573-Family_Name': d.fn,
-                    'Member number': d.m, 'Member Number': d.m, 'MEMBER number': d.m, 'Media Super member number': d.m, 'Cbus member number': d.m, '8138573-member_number': d.m,
+                    // --- GIVEN NAMES VARIATIONS ---
+                    'Given names': d.gn, 'First names': d.gn, 'First name': d.gn, 
+                    'Given Names': d.gn, 'First Names': d.gn, '8138573-Given_Names': d.gn,
                     
-                    // DOB Slicing
+                    // --- FAMILY NAME VARIATIONS ---
+                    'Family name': d.fn, 'Family Name': d.fn, '8138573-Family_Name': d.fn,
+                    
+                    // --- MEMBER NUMBER VARIATIONS ---
+                    'Member number': d.m, 'Member Number': d.m, 'MEMBER number': d.m, 
+                    'Media Super member number': d.m, 'Cbus member number': d.m, '8138573-member_number': d.m,
+                    
+                    // --- DATE OF BIRTH ---
                     'Date of birth day': dobD, 'Date of birth month': dobM, 'Date of birth year': dobY,
                     '2B - Date of birth day': dobD, '2B - Date of birth month': dobM, '2B - Date of birth year': dobY,
 
-                    // Contact & Address (Including case-sensitive fixes)
+                    // --- CONTACT INFO ---
                     'Email address': d.eml, 'Email Address': d.eml, 'Telephone mobile': d.mob, 'mobile': d.mob, 'mobile1': d.mob, 'Mobile': d.mob,
-                    'Street Number': d.addr, 'Street Name': d.addr, 'Residential address': d.addr, 'Street Number and Name': d.addr, 
-                    'street name': d.addr, 'Street name': d.addr,
+                    
+                    // --- ADDRESS (Specifically fixing Opt-in and Investment Choice) ---
+                    'Street Number': d.addr, 'Street Name': d.addr, 'Street name': d.addr, 'street name': d.addr,
+                    'Residential address': d.addr, 'Street Number and Name': d.addr, 
                     'Suburb/town': d.sub, 'State': d.st, 'Postcode': d.pc,
 
-                    // TFN
+                    // --- TFN ---
                     'TFN1': tfn.substring(0,3), 'TFN2': tfn.substring(3,6), 'TFN3': tfn.substring(6,9),
                     '8138573-TFN1': tfn.substring(0,3), '8138573-TFN2': tfn.substring(3,6), '8138573-TFN3': tfn.substring(6,9),
 
-                    // Universal Signing Dates (Year Fix "26")
+                    // --- ALL SIGNING DATE VARIATIONS ---
                     '8138576-Sign_Date_Day': curD, '8138576-Sign_Date_Month': curM, '8138576-Sign_Date_Year': curYY,
                     'decDD': curD, 'decMM': curM, 'decYYYY': curYYYY,
                     'Signature DD': curD, 'Signature MM': curM, 'Signature YY': curYY,
