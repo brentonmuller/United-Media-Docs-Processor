@@ -31,7 +31,7 @@
 <div id="auth-overlay">
     <div class="pin-box">
         <h3 style="margin-top:0; color: var(--media-blue);">Media Super Access</h3>
-        <p style="font-size: 13px; color: #666;">Enter Admin PIN to continue</p>
+        <p style="font-size: 13px; color: #666;">Enter Admin PIN</p>
         <input type="password" id="pin-entry" class="pin-input" maxlength="4" placeholder="••••">
         <br>
         <button onclick="checkPin()" style="background: var(--media-blue); color: white; border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-weight: bold;">Unlock Assistant</button>
@@ -40,20 +40,12 @@
 </div>
 
 <div class="card" id="main-ui">
-    <h2 style="color:var(--media-blue); text-align:center; margin-top:0;">🎥 Media Super Assistant</h2>
+    <h2 style="color:var(--media-blue); text-align:center; margin-top:0;">🏗️ Media Super Document Assistant</h2>
     
     <div class="grid">
         <div class="full"><label>Member Number</label><input type="text" id="m_no"></div>
-        <div><label>Title</label>
-            <select id="title_select">
-                <option value="Mr">Mr</option>
-                <option value="Mrs">Mrs</option>
-                <option value="Ms">Ms</option>
-                <option value="Miss">Miss</option>
-            </select>
-        </div>
         <div><label>Given Name(s)</label><input type="text" id="gn"></div>
-        <div class="full"><label>Family Name</label><input type="text" id="fn"></div>
+        <div><label>Family Name</label><input type="text" id="fn"></div>
         <div class="full"><label>Date of Birth</label><input type="date" id="dob"></div>
         <div class="full"><label>Tax File Number</label><input type="tel" id="tfn" placeholder="9 digits"></div>
         <div class="full"><label>Mobile Number</label><input type="tel" id="mob"></div>
@@ -106,14 +98,9 @@
 
         const gn = document.getElementById('gn').value.trim();
         const fn = document.getElementById('fn').value.trim();
-        const fullName = `${gn} ${fn}`.trim() || "Media_Super_Member";
+        const fullName = `${gn} ${fn}`.trim() || "Member";
         const tfn = document.getElementById('tfn').value.replace(/\s/g, '');
 
-        // Handle DOB splitting
-        const dobVal = document.getElementById('dob').value;
-        const [dobY, dobM, dobD] = dobVal ? dobVal.split('-') : ['', '', ''];
-
-        // Handle Current Date (Step 3)
         const now = new Date();
         const curD = String(now.getDate()).padStart(2, '0');
         const curM = String(now.getMonth() + 1).padStart(2, '0');
@@ -123,7 +110,6 @@
             m: document.getElementById('m_no').value,
             gn: gn,
             fn: fn,
-            title: document.getElementById('title_select').value,
             mob: document.getElementById('mob').value,
             eml: document.getElementById('eml').value,
             addr: document.getElementById('addr').value,
@@ -137,7 +123,6 @@
                 const fileName = item.value;
                 status.innerText = `Processing: ${fileName}...`;
                 
-                // Assuming files are in a /forms/MEDIA/ subfolder
                 const response = await fetch(`./forms/MEDIA/${fileName}?t=${Date.now()}`);
                 if (!response.ok) throw new Error(`File ${fileName} not found.`);
 
@@ -145,7 +130,6 @@
                 const form = pdfDoc.getForm();
 
                 const masterMap = {
-                    'Title_8138573': data.title,
                     '8138573-Given_Names': data.gn,
                     '8138573-Family_Name': data.fn,
                     '8138573-member_number': data.m,
@@ -153,11 +137,11 @@
                     '8138573-TFN1': tfn.substring(0,3),
                     '8138573-TFN2': tfn.substring(3,6),
                     '8138573-TFN3': tfn.substring(6,9),
-                    // Step 3 Date
-                    '8138576-Sign_Date_Day': curD,
-                    '8138576-Sign_Date_Month': curM,
-                    '8138576-Sign_Date_Year': curYYYY,
-                    // Generic mappings (Common field names in super forms)
+                    // Redirected Date Mapping (Acted_date fields)
+                    '8138577-Acted_date1': curD,
+                    '8138577-Acted_date2': curM,
+                    '8138577-Acted_date3': curYYYY,
+                    // Generic mappings
                     'Residential address': data.addr,
                     'Suburb/town': data.sub,
                     'State': data.st,
@@ -177,9 +161,7 @@
             const blob = await zip.generateAsync({type:"blob"});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url; 
-            a.download = `${fullName}_MediaSuper.zip`;
-            a.click();
+            a.href = url; a.download = `${fullName}_MediaSuper.zip`; a.click();
             status.innerText = "✅ Done! Pack Downloaded.";
         } catch (err) {
             status.style.color = "red";
