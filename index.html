@@ -131,8 +131,8 @@
                 const form = pdfDoc.getForm();
 
                 const masterMap = {
-                    // Universal Names
-                    'Given names': d.gn, 'First names': d.gn, 'Given Names': d.gn, 'First name': d.gn, '8138573-Given_Names': d.gn,
+                    // Universal Names & Specific ID Fixes
+                    'Given names': d.gn, 'First names': d.gn, 'First name': d.gn, 'Given Names': d.gn, '8138573-Given_Names': d.gn,
                     'Family name': d.fn, 'Family Name': d.fn, '8138573-Family_Name': d.fn,
                     'Member number': d.m, 'Member Number': d.m, 'MEMBER number': d.m, 'Media Super member number': d.m, 'Cbus member number': d.m, '8138573-member_number': d.m,
                     
@@ -140,9 +140,10 @@
                     'Date of birth day': dobD, 'Date of birth month': dobM, 'Date of birth year': dobY,
                     '2B - Date of birth day': dobD, '2B - Date of birth month': dobM, '2B - Date of birth year': dobY,
 
-                    // Contact & Address
+                    // Contact & Address (Including case-sensitive fixes)
                     'Email address': d.eml, 'Email Address': d.eml, 'Telephone mobile': d.mob, 'mobile': d.mob, 'mobile1': d.mob, 'Mobile': d.mob,
-                    'Street Number': d.addr, 'Street Name': d.addr, 'Residential address': d.addr, 'Street Number and Name': d.addr, 'street name': d.addr,
+                    'Street Number': d.addr, 'Street Name': d.addr, 'Residential address': d.addr, 'Street Number and Name': d.addr, 
+                    'street name': d.addr, 'Street name': d.addr,
                     'Suburb/town': d.sub, 'State': d.st, 'Postcode': d.pc,
 
                     // TFN
@@ -158,8 +159,7 @@
                     'Step 3 date': curD, 'Step 3 date MM': curM, 'Step 3 date YY': curYY,
                     'Combine - Declaration DD': curD, 'Combine - Declaration MM': curM, 'Combine - Declaration YY': curYY,
                     'Join - Declaration DD': curD, 'Join - Declaration MM': curM, 'Join - Declaration YY': curYY,
-                    
-                    // Fix for Step 8 Withdrawal Form
+                    'Member day': curD, 'Member month': curM, 'Member year': curYYYY,
                     '12 form 1 sign DD': curD, '12 form 1 sign MM': curM, '12 form 1 sign YY': curYY
                 };
 
