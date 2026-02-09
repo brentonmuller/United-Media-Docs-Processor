@@ -105,7 +105,7 @@
         const now = new Date();
         const curD = String(now.getDate()).padStart(2, '0');
         const curM = String(now.getMonth() + 1).padStart(2, '0');
-        const curYYYY = String(now.getFullYear());
+        const curYY = String(now.getFullYear());
 
         const data = {
             m: document.getElementById('m_no').value,
@@ -141,7 +141,7 @@
                     // Step 3 SIGN DATE fields (Targeting exactly as per scan)
                     '8138576-Sign_Date_Day': curD,
                     '8138576-Sign_Date_Month': curM,
-                    '8138576-Sign_Date_Year': curYYYY,
+                    '8138576-Sign_Date_Year': curYY,
                     // Address and Contact
                     'Residential address': data.addr,
                     'Suburb/town': data.sub,
@@ -171,4 +171,5 @@
     }
 </script>
 </body>
+
 </html>
