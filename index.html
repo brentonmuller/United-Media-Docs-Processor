@@ -3,17 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Media Super Assistant February 2026</title>
+    <title>Media Super Document Assistant February 2026</title>
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         :root { --media-blue: #005aab; }
         body { font-family: -apple-system, system-ui, sans-serif; background: #f0f4f7; padding: 15px; margin: 0; }
         
+        /* PIN Security Overlay */
         #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(240, 244, 247, 0.98); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
         .pin-box { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; border-top: 5px solid var(--media-blue); }
         .pin-input { font-size: 24px; width: 120px; text-align: center; letter-spacing: 8px; padding: 10px; border: 2px solid #ddd; border-radius: 8px; margin: 15px 0; outline: none; }
         
+        /* Main UI */
         .card { background: white; max-width: 650px; margin: 0 auto; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 8px solid var(--media-blue); display: none; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .full { grid-column: span 2; }
@@ -30,8 +32,8 @@
 
 <div id="auth-overlay">
     <div class="pin-box">
-        <h3 style="margin-top:0; color: var(--media-blue);">Media Super Access</h3>
-        <p style="font-size: 13px; color: #666;">Enter Admin PIN</p>
+        <h3 style="margin-top:0; color: var(--media-blue);">Secure Access</h3>
+        <p style="font-size: 13px; color: #666;">Enter Admin PIN to continue</p>
         <input type="password" id="pin-entry" class="pin-input" maxlength="4" placeholder="••••">
         <br>
         <button onclick="checkPin()" style="background: var(--media-blue); color: white; border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-weight: bold;">Unlock Assistant</button>
@@ -81,11 +83,13 @@
 <script>
     function checkPin() {
         const pin = document.getElementById('pin-entry').value;
-        if (pin === "1234") {
+        const correctPin = "1234";
+        if (pin === correctPin) {
             document.getElementById('auth-overlay').style.display = 'none';
             document.getElementById('main-ui').style.display = 'block';
         } else {
             document.getElementById('pin-error').style.display = 'block';
+            document.getElementById('pin-entry').value = '';
         }
     }
 
@@ -98,14 +102,17 @@
 
         const gn = document.getElementById('gn').value.trim();
         const fn = document.getElementById('fn').value.trim();
-        const fullName = `${gn} ${fn}`.trim() || "Member";
-        const tfn = document.getElementById('tfn').value.replace(/\s/g, '');
+        const fullName = `${gn} ${fn}`.trim() || "Media_Super_Member";
 
-        // Handle current date for Step 3
+        const dobVal = document.getElementById('dob').value;
+        const [dobY, dobM, dobD] = dobVal ? dobVal.split('-') : ['', '', ''];
+        const tfn = document.getElementById('tfn').value.replace(/\s/g, '');
+        
         const now = new Date();
         const curD = String(now.getDate()).padStart(2, '0');
         const curM = String(now.getMonth() + 1).padStart(2, '0');
-        const curYY = String(now.getFullYear());
+        const curYYYY = String(now.getFullYear());
+        const curYY = curYYYY.substring(2); // Extracts "26"
 
         const data = {
             m: document.getElementById('m_no').value,
@@ -131,38 +138,48 @@
                 const form = pdfDoc.getForm();
 
                 const masterMap = {
+                    // Personal Details (8138573 series)
                     '8138573-Given_Names': data.gn,
                     '8138573-Family_Name': data.fn,
                     '8138573-member_number': data.m,
-                    // TFN Split
                     '8138573-TFN1': tfn.substring(0,3),
                     '8138573-TFN2': tfn.substring(3,6),
                     '8138573-TFN3': tfn.substring(6,9),
-                    // Step 3 SIGN DATE fields (Targeting exactly as per scan)
+                    
+                    // Step 3 SIGN DATE (8138576 series)
                     '8138576-Sign_Date_Day': curD,
                     '8138576-Sign_Date_Month': curM,
-                    '8138576-Sign_Date_Year': curYY,
-                    // Address and Contact
+                    '8138576-Sign_Date_Year': curYY, // Correctly fills "26"
+
+                    // Standard Address/Contact fields
                     'Residential address': data.addr,
                     'Suburb/town': data.sub,
                     'State': data.st,
                     'Postcode': data.pc,
                     'Mobile': data.mob,
-                    'Email address': data.eml
+                    'Email address': data.eml,
+                    
+                    // DOB fields (if present as standard names)
+                    'Date of birth day': dobD,
+                    'Date of birth month': dobM,
+                    'Date of birth year': dobY
                 };
 
                 Object.entries(masterMap).forEach(([k, v]) => {
                     try { form.getTextField(k).setText(v); } catch(e) {}
                 });
 
-                zip.file(`${fullName} - ${fileName}`, await pdfDoc.save());
+                const newFileName = `${fullName} - ${fileName}`;
+                zip.file(newFileName, await pdfDoc.save());
             }
 
             status.innerText = "📦 Creating Pack...";
             const blob = await zip.generateAsync({type:"blob"});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url; a.download = `${fullName}_MediaSuper.zip`; a.click();
+            a.href = url; 
+            a.download = `${fullName}_MediaSuper.zip`;
+            a.click();
             status.innerText = "✅ Done! Pack Downloaded.";
         } catch (err) {
             status.style.color = "red";
@@ -171,5 +188,4 @@
     }
 </script>
 </body>
-
 </html>
