@@ -101,6 +101,7 @@
         const fullName = `${gn} ${fn}`.trim() || "Member";
         const tfn = document.getElementById('tfn').value.replace(/\s/g, '');
 
+        // Handle current date for Step 3
         const now = new Date();
         const curD = String(now.getDate()).padStart(2, '0');
         const curM = String(now.getMonth() + 1).padStart(2, '0');
@@ -137,11 +138,11 @@
                     '8138573-TFN1': tfn.substring(0,3),
                     '8138573-TFN2': tfn.substring(3,6),
                     '8138573-TFN3': tfn.substring(6,9),
-                    // Redirected Date Mapping (Acted_date fields)
-                    '8138577-Acted_date1': curD,
-                    '8138577-Acted_date2': curM,
-                    '8138577-Acted_date3': curYYYY,
-                    // Generic mappings
+                    // Step 3 SIGN DATE fields (Targeting exactly as per scan)
+                    '8138576-Sign_Date_Day': curD,
+                    '8138576-Sign_Date_Month': curM,
+                    '8138576-Sign_Date_Year': curYYYY,
+                    // Address and Contact
                     'Residential address': data.addr,
                     'Suburb/town': data.sub,
                     'State': data.st,
