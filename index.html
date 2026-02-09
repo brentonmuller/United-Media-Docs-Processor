@@ -3,46 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Super Document Assistant - February 2026</title>
+    <title>Universal Super Assistant Feb 2026</title>
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
-        :root { --primary-blue: #005aab; }
+        :root { --media-blue: #005aab; }
         body { font-family: -apple-system, system-ui, sans-serif; background: #f0f4f7; padding: 15px; margin: 0; }
         
         #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(240, 244, 247, 0.98); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
-        .pin-box { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; border-top: 5px solid var(--primary-blue); }
+        .pin-box { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; border-top: 5px solid var(--media-blue); }
         .pin-input { font-size: 24px; width: 120px; text-align: center; letter-spacing: 8px; padding: 10px; border: 2px solid #ddd; border-radius: 8px; margin: 15px 0; outline: none; }
         
-        .card { background: white; max-width: 650px; margin: 0 auto; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 8px solid var(--primary-blue); display: none; }
+        .card { background: white; max-width: 650px; margin: 0 auto; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 8px solid var(--media-blue); display: none; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .full { grid-column: span 2; }
         label { display: block; font-size: 11px; font-weight: bold; color: #666; text-transform: uppercase; margin-bottom: 5px; }
         input, select { width: 100%; padding: 14px; border: 1px solid #ccc; border-radius: 10px; font-size: 16px; box-sizing: border-box; background: white; }
         
-        .form-selector { margin-top: 25px; background: #f9f9f9; padding: 15px; border-radius: 10px; border: 1px solid #ddd; height: 300px; overflow-y: scroll; }
+        .form-selector { margin-top: 25px; background: #f9f9f9; padding: 15px; border-radius: 10px; border: 1px solid #ddd; height: 250px; overflow-y: auto; }
         .form-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 13px; }
-        .form-item input[type="checkbox"] { width: 22px; height: 22px; margin-right: 15px; accent-color: var(--primary-blue); }
+        .form-item input[type="checkbox"] { width: 22px; height: 22px; margin-right: 15px; accent-color: var(--media-blue); }
         
-        .btn-run { width: 100%; padding: 20px; background: var(--primary-blue); color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; margin-top: 25px; cursor: pointer; }
-        #status { text-align: center; margin-top: 20px; font-weight: bold; color: var(--primary-blue); font-size: 13px; }
+        .btn-run { width: 100%; padding: 20px; background: var(--media-blue); color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; margin-top: 25px; cursor: pointer; }
+        #status { text-align: center; margin-top: 20px; font-weight: bold; color: var(--media-blue); font-size: 13px; }
     </style>
 </head>
 <body>
 
 <div id="auth-overlay">
     <div class="pin-box">
-        <h3 style="margin-top:0; color: var(--primary-blue);">Secure Access</h3>
+        <h3 style="margin-top:0; color: var(--media-blue);">Secure Access</h3>
         <p style="font-size: 13px; color: #666;">Enter Admin PIN</p>
         <input type="password" id="pin-entry" class="pin-input" maxlength="4" placeholder="••••">
         <br>
-        <button onclick="checkPin()" style="background: var(--primary-blue); color: white; border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-weight: bold;">Unlock Assistant</button>
-        <div id="pin-error" style="color: red; font-size: 12px; margin-top: 10px; display: none;">Incorrect PIN</div>
+        <button onclick="checkPin()" style="background: var(--media-blue); color: white; border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-weight: bold;">Unlock</button>
     </div>
 </div>
 
 <div class="card" id="main-ui">
-    <h2 style="color:var(--primary-blue); text-align:center; margin-top:0;">📂 Universal Super Assistant</h2>
+    <h2 style="color:var(--media-blue); text-align:center; margin-top:0;">📂 Universal Super Assistant</h2>
     
     <div class="grid">
         <div class="full"><label>Member Number</label><input type="text" id="m_no"></div>
@@ -66,20 +65,19 @@
     </div>
 
     <div class="form-selector">
-        <label style="padding: 10px; position: sticky; top: 0; background: #f9f9f9; display: block; border-bottom: 1px solid #ddd;">Select Forms to Generate:</label>
         <div id="formList" style="padding: 0 10px;">
-            <label class="form-item"><input type="checkbox" value="i-want-my-super-paid-into-media-super.pdf"> Media Super Choice of Fund</label>
-            <label class="form-item"><input type="checkbox" value="application-increase-cover-due-to-life-event.pdf"> Insurance Increase (Life Event)</label>
-            <label class="form-item"><input type="checkbox" value="i-want-insurance-cover.pdf"> Opt-in Insurance Cover</label>
-            <label class="form-item"><input type="checkbox" value="change-my-insurance-industry-super.pdf"> Change Insurance Cover</label>
+            <label class="form-item"><input type="checkbox" value="i-want-my-super-paid-into-media-super.pdf"> Choice of Fund</label>
+            <label class="form-item"><input type="checkbox" value="application-increase-cover-due-to-life-event.pdf"> Insurance Increase</label>
+            <label class="form-item"><input type="checkbox" value="i-want-insurance-cover.pdf"> Opt-in Insurance</label>
+            <label class="form-item"><input type="checkbox" value="change-my-insurance-industry-super.pdf"> Change Insurance</label>
             <label class="form-item"><input type="checkbox" value="investment-choice.pdf"> Investment Choice</label>
             <label class="form-item"><input type="checkbox" value="change-of-details.pdf"> Change of Details</label>
             <label class="form-item"><input type="checkbox" value="salary-sacrifice.pdf"> Salary Sacrifice</label>
             <label class="form-item"><input type="checkbox" value="binding-death-nomination.pdf"> Binding Death Nomination</label>
-            <label class="form-item"><input type="checkbox" value="super-withdrawal-form.pdf"> Super Withdrawal</label>
-            <label class="form-item"><input type="checkbox" value="combine-your-super.pdf"> Combine Super (Rollover)</label>
-            <label class="form-item"><input type="checkbox" value="application-transfer-existing-insurance-cover.pdf"> Transfer Insurance Cover</label>
-            <label class="form-item"><input type="checkbox" value="join-industry.pdf"> Join Industry Form</label>
+            <label class="form-item"><input type="checkbox" value="super-withdrawal-form.pdf"> Withdrawal Form</label>
+            <label class="form-item"><input type="checkbox" value="combine-your-super.pdf"> Combine/Rollover</label>
+            <label class="form-item"><input type="checkbox" value="application-transfer-existing-insurance-cover.pdf"> Transfer Insurance</label>
+            <label class="form-item"><input type="checkbox" value="join-industry.pdf"> Join Industry</label>
         </div>
     </div>
 
@@ -92,19 +90,16 @@
         if (document.getElementById('pin-entry').value === "1234") {
             document.getElementById('auth-overlay').style.display = 'none';
             document.getElementById('main-ui').style.display = 'block';
-        } else {
-            document.getElementById('pin-error').style.display = 'block';
         }
     }
 
     async function runBatch() {
         const selected = Array.from(document.querySelectorAll('#formList input:checked'));
-        if (selected.length === 0) return alert("Please select at least one form.");
+        if (selected.length === 0) return alert("Select forms first.");
 
         const status = document.getElementById('status');
         const zip = new JSZip();
 
-        // Data Capture
         const gn = document.getElementById('gn').value.trim();
         const fn = document.getElementById('fn').value.trim();
         const fullName = `${gn} ${fn}`.trim() || "Member";
@@ -112,7 +107,6 @@
         const dobVal = document.getElementById('dob').value;
         const [dobY, dobM, dobD] = dobVal ? dobVal.split('-') : ['', '', ''];
 
-        // Dates Logic
         const now = new Date();
         const curD = String(now.getDate()).padStart(2, '0');
         const curM = String(now.getMonth() + 1).padStart(2, '0');
@@ -121,63 +115,48 @@
 
         const d = {
             m: document.getElementById('m_no').value,
-            gn: gn,
-            fn: fn,
-            mob: document.getElementById('mob').value,
-            eml: document.getElementById('eml').value,
-            addr: document.getElementById('addr').value,
-            sub: document.getElementById('sub').value,
-            st: document.getElementById('st').value,
-            pc: document.getElementById('pc').value
+            gn: gn, fn: fn, mob: document.getElementById('mob').value, eml: document.getElementById('eml').value,
+            addr: document.getElementById('addr').value, sub: document.getElementById('sub').value, st: document.getElementById('st').value, pc: document.getElementById('pc').value
         };
 
         try {
             for (const item of selected) {
                 const fileName = item.value;
-                status.innerText = `Processing: ${fileName}...`;
+                status.innerText = `Fetching: ${fileName}...`;
                 
-                const response = await fetch(`./forms/${fileName}`);
-                if (!response.ok) throw new Error(`File ${fileName} not found.`);
+                // GitHub Specific Path
+                const response = await fetch(`./forms/MEDIA/${fileName}`);
+                if (!response.ok) throw new Error(`File ${fileName} not found in /forms/MEDIA/ folder.`);
 
                 const pdfDoc = await PDFLib.PDFDocument.load(await response.arrayBuffer());
                 const form = pdfDoc.getForm();
 
                 const masterMap = {
-                    // Universal Personal Details
-                    'Given names': d.gn, 'First names': d.gn, 'First name': d.gn, 'Given Names': d.gn,
-                    'Family name': d.fn, 'Family Name': d.fn,
-                    'Member number': d.m, 'Member Number': d.m, 'MEMBER number': d.m, 'Media Super member number': d.m, 'Cbus member number': d.m,
+                    // Universal Names
+                    'Given names': d.gn, 'First names': d.gn, 'Given Names': d.gn, 'First name': d.gn, '8138573-Given_Names': d.gn,
+                    'Family name': d.fn, 'Family Name': d.fn, '8138573-Family_Name': d.fn,
+                    'Member number': d.m, 'Member Number': d.m, 'MEMBER number': d.m, 'Media Super member number': d.m, 'Cbus member number': d.m, '8138573-member_number': d.m,
+                    
+                    // DOB Slicing
                     'Date of birth day': dobD, 'Date of birth month': dobM, 'Date of birth year': dobY,
                     '2B - Date of birth day': dobD, '2B - Date of birth month': dobM, '2B - Date of birth year': dobY,
-                    'Email address': d.eml, 'Email Address': d.eml,
-                    'mobile': d.mob, 'mobile1': d.mob, 'Mobile': d.mob, 'Telephone mobile': d.mob, 'step 2 - Telephone mobile': d.mob,
-                    
-                    // Address Mappings
+
+                    // Contact & Address
+                    'Email address': d.eml, 'Email Address': d.eml, 'Telephone mobile': d.mob, 'mobile': d.mob, 'mobile1': d.mob, 'Mobile': d.mob,
                     'Street Number': d.addr, 'Street Name': d.addr, 'Residential address': d.addr, 'Street Number and Name': d.addr, 'street name': d.addr,
-                    'Suburb/town': d.sub, 'resid suburb/town': d.sub,
-                    'State': d.st, 'resid state': d.st,
-                    'Postcode': d.pc, 'resid postcode': d.pc,
-                    
-                    // TFN Slicing
+                    'Suburb/town': d.sub, 'State': d.st, 'Postcode': d.pc,
+
+                    // TFN
                     'TFN1': tfn.substring(0,3), 'TFN2': tfn.substring(3,6), 'TFN3': tfn.substring(6,9),
                     '8138573-TFN1': tfn.substring(0,3), '8138573-TFN2': tfn.substring(3,6), '8138573-TFN3': tfn.substring(6,9),
 
-                    // Media Super Specific (Numeric IDs)
-                    '8138573-Given_Names': d.gn,
-                    '8138573-Family_Name': d.fn,
-                    '8138573-member_number': d.m,
-
-                    // Signing Date Mappings (Day, Month, Year Fix)
+                    // Universal Signing Dates (Year Fix "26")
                     '8138576-Sign_Date_Day': curD, '8138576-Sign_Date_Month': curM, '8138576-Sign_Date_Year': curYY,
                     'decDD': curD, 'decMM': curM, 'decYYYY': curYYYY,
                     'Signature DD': curD, 'Signature MM': curM, 'Signature YY': curYY,
                     'Declaration DD': curD, 'Declaration MM': curM, 'Declaration YY': curYY,
-                    'Member day': curD, 'Member month': curM, 'Member year': curYYYY,
-                    'Step 4 - DD': curD, 'Step 4 - MM': curM, 'Step 4 - YYYY': curYYYY,
                     'Member declaration date DD': curD, 'Member declaration date MM': curM, 'Member declaration date YY': curYY,
                     'Step 3 date': curD, 'Step 3 date MM': curM, 'Step 3 date YY': curYY,
-                    '3 Step 3 date': curD, '3 Step 3 date MM': curM, '3 Step 3 date YY': curYY,
-                    '12 form 1 sign DD': curD, '12 form 1 sign MM': curM, '12 form 1 sign YY': curYY,
                     'Combine - Declaration DD': curD, 'Combine - Declaration MM': curM, 'Combine - Declaration YY': curYY,
                     'Join - Declaration DD': curD, 'Join - Declaration MM': curM, 'Join - Declaration YY': curYY
                 };
@@ -193,9 +172,9 @@
             const content = await zip.generateAsync({type:"blob"});
             const link = document.createElement('a');
             link.href = URL.createObjectURL(content);
-            link.download = `${fullName}_Forms_Pack.zip`;
+            link.download = `${fullName}_Super_Pack.zip`;
             link.click();
-            status.innerText = "✅ Done! Download Started.";
+            status.innerText = "✅ Done!";
         } catch (err) {
             status.style.color = "red";
             status.innerText = `❌ Error: ${err.message}`;
