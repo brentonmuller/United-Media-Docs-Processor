@@ -3,46 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Media Super Document Assistant February 2026</title>
+    <title>Super Document Assistant - February 2026</title>
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
-        :root { --media-blue: #005aab; }
+        :root { --primary-blue: #005aab; }
         body { font-family: -apple-system, system-ui, sans-serif; background: #f0f4f7; padding: 15px; margin: 0; }
         
-        /* PIN Security Overlay */
         #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(240, 244, 247, 0.98); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
-        .pin-box { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; border-top: 5px solid var(--media-blue); }
+        .pin-box { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; border-top: 5px solid var(--primary-blue); }
         .pin-input { font-size: 24px; width: 120px; text-align: center; letter-spacing: 8px; padding: 10px; border: 2px solid #ddd; border-radius: 8px; margin: 15px 0; outline: none; }
         
-        /* Main UI */
-        .card { background: white; max-width: 650px; margin: 0 auto; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 8px solid var(--media-blue); display: none; }
+        .card { background: white; max-width: 650px; margin: 0 auto; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 8px solid var(--primary-blue); display: none; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .full { grid-column: span 2; }
         label { display: block; font-size: 11px; font-weight: bold; color: #666; text-transform: uppercase; margin-bottom: 5px; }
         input, select { width: 100%; padding: 14px; border: 1px solid #ccc; border-radius: 10px; font-size: 16px; box-sizing: border-box; background: white; }
-        .form-selector { margin-top: 25px; background: #f9f9f9; padding: 15px; border-radius: 10px; border: 1px solid #ddd; }
-        .form-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px; }
-        .form-item input[type="checkbox"] { width: 26px; height: 26px; margin-right: 15px; accent-color: var(--media-blue); }
-        .btn-run { width: 100%; padding: 20px; background: var(--media-blue); color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; margin-top: 25px; cursor: pointer; }
-        #status { text-align: center; margin-top: 20px; font-weight: bold; color: var(--media-blue); font-size: 13px; }
+        
+        .form-selector { margin-top: 25px; background: #f9f9f9; padding: 15px; border-radius: 10px; border: 1px solid #ddd; height: 300px; overflow-y: scroll; }
+        .form-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 13px; }
+        .form-item input[type="checkbox"] { width: 22px; height: 22px; margin-right: 15px; accent-color: var(--primary-blue); }
+        
+        .btn-run { width: 100%; padding: 20px; background: var(--primary-blue); color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; margin-top: 25px; cursor: pointer; }
+        #status { text-align: center; margin-top: 20px; font-weight: bold; color: var(--primary-blue); font-size: 13px; }
     </style>
 </head>
 <body>
 
 <div id="auth-overlay">
     <div class="pin-box">
-        <h3 style="margin-top:0; color: var(--media-blue);">Secure Access</h3>
-        <p style="font-size: 13px; color: #666;">Enter Admin PIN to continue</p>
+        <h3 style="margin-top:0; color: var(--primary-blue);">Secure Access</h3>
+        <p style="font-size: 13px; color: #666;">Enter Admin PIN</p>
         <input type="password" id="pin-entry" class="pin-input" maxlength="4" placeholder="••••">
         <br>
-        <button onclick="checkPin()" style="background: var(--media-blue); color: white; border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-weight: bold;">Unlock Assistant</button>
+        <button onclick="checkPin()" style="background: var(--primary-blue); color: white; border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-weight: bold;">Unlock Assistant</button>
         <div id="pin-error" style="color: red; font-size: 12px; margin-top: 10px; display: none;">Incorrect PIN</div>
     </div>
 </div>
 
 <div class="card" id="main-ui">
-    <h2 style="color:var(--media-blue); text-align:center; margin-top:0;">🏗️ Media Super Document Assistant</h2>
+    <h2 style="color:var(--primary-blue); text-align:center; margin-top:0;">📂 Universal Super Assistant</h2>
     
     <div class="grid">
         <div class="full"><label>Member Number</label><input type="text" id="m_no"></div>
@@ -56,65 +56,70 @@
         <div><label>Suburb</label><input type="text" id="sub"></div>
         <div><label>State</label>
             <select id="st">
-                <option value="QLD">QLD</option>
-                <option value="NSW">NSW</option>
-                <option value="VIC">VIC</option>
-                <option value="WA">WA</option>
-                <option value="SA">SA</option>
-                <option value="TAS">TAS</option>
-                <option value="ACT">ACT</option>
-                <option value="NT">NT</option>
+                <option value="QLD">QLD</option><option value="NSW">NSW</option>
+                <option value="VIC">VIC</option><option value="WA">WA</option>
+                <option value="SA">SA</option><option value="TAS">TAS</option>
+                <option value="ACT">ACT</option><option value="NT">NT</option>
             </select>
         </div>
         <div class="full"><label>Postcode</label><input type="tel" id="pc"></div>
     </div>
 
     <div class="form-selector">
-        <label>Select Required Forms:</label>
-        <div id="formList">
-            <label class="form-item"><input type="checkbox" value="i-want-my-super-paid-into-media-super.pdf" checked> Choice of Fund Form</label>
+        <label style="padding: 10px; position: sticky; top: 0; background: #f9f9f9; display: block; border-bottom: 1px solid #ddd;">Select Forms to Generate:</label>
+        <div id="formList" style="padding: 0 10px;">
+            <label class="form-item"><input type="checkbox" value="i-want-my-super-paid-into-media-super.pdf"> Media Super Choice of Fund</label>
+            <label class="form-item"><input type="checkbox" value="application-increase-cover-due-to-life-event.pdf"> Insurance Increase (Life Event)</label>
+            <label class="form-item"><input type="checkbox" value="i-want-insurance-cover.pdf"> Opt-in Insurance Cover</label>
+            <label class="form-item"><input type="checkbox" value="change-my-insurance-industry-super.pdf"> Change Insurance Cover</label>
+            <label class="form-item"><input type="checkbox" value="investment-choice.pdf"> Investment Choice</label>
+            <label class="form-item"><input type="checkbox" value="change-of-details.pdf"> Change of Details</label>
+            <label class="form-item"><input type="checkbox" value="salary-sacrifice.pdf"> Salary Sacrifice</label>
+            <label class="form-item"><input type="checkbox" value="binding-death-nomination.pdf"> Binding Death Nomination</label>
+            <label class="form-item"><input type="checkbox" value="super-withdrawal-form.pdf"> Super Withdrawal</label>
+            <label class="form-item"><input type="checkbox" value="combine-your-super.pdf"> Combine Super (Rollover)</label>
+            <label class="form-item"><input type="checkbox" value="application-transfer-existing-insurance-cover.pdf"> Transfer Insurance Cover</label>
+            <label class="form-item"><input type="checkbox" value="join-industry.pdf"> Join Industry Form</label>
         </div>
     </div>
 
-    <button class="btn-run" onclick="runBatch()">🚀 Generate Bundle</button>
+    <button class="btn-run" onclick="runBatch()">🚀 Generate Selected Bundle</button>
     <div id="status"></div>
 </div>
 
 <script>
     function checkPin() {
-        const pin = document.getElementById('pin-entry').value;
-        const correctPin = "1234";
-        if (pin === correctPin) {
+        if (document.getElementById('pin-entry').value === "1234") {
             document.getElementById('auth-overlay').style.display = 'none';
             document.getElementById('main-ui').style.display = 'block';
         } else {
             document.getElementById('pin-error').style.display = 'block';
-            document.getElementById('pin-entry').value = '';
         }
     }
 
     async function runBatch() {
         const selected = Array.from(document.querySelectorAll('#formList input:checked'));
-        if (selected.length === 0) return alert("Select at least one form.");
+        if (selected.length === 0) return alert("Please select at least one form.");
 
         const status = document.getElementById('status');
         const zip = new JSZip();
 
+        // Data Capture
         const gn = document.getElementById('gn').value.trim();
         const fn = document.getElementById('fn').value.trim();
-        const fullName = `${gn} ${fn}`.trim() || "Media_Super_Member";
-
+        const fullName = `${gn} ${fn}`.trim() || "Member";
+        const tfn = document.getElementById('tfn').value.replace(/\s/g, '');
         const dobVal = document.getElementById('dob').value;
         const [dobY, dobM, dobD] = dobVal ? dobVal.split('-') : ['', '', ''];
-        const tfn = document.getElementById('tfn').value.replace(/\s/g, '');
-        
+
+        // Dates Logic
         const now = new Date();
         const curD = String(now.getDate()).padStart(2, '0');
         const curM = String(now.getMonth() + 1).padStart(2, '0');
         const curYYYY = String(now.getFullYear());
-        const curYY = curYYYY.substring(2); // Extracts "26"
+        const curYY = curYYYY.substring(2);
 
-        const data = {
+        const d = {
             m: document.getElementById('m_no').value,
             gn: gn,
             fn: fn,
@@ -131,59 +136,69 @@
                 const fileName = item.value;
                 status.innerText = `Processing: ${fileName}...`;
                 
-                const response = await fetch(`./forms/MEDIA/${fileName}?t=${Date.now()}`);
+                const response = await fetch(`./forms/${fileName}`);
                 if (!response.ok) throw new Error(`File ${fileName} not found.`);
 
                 const pdfDoc = await PDFLib.PDFDocument.load(await response.arrayBuffer());
                 const form = pdfDoc.getForm();
 
                 const masterMap = {
-                    // Personal Details (8138573 series)
-                    '8138573-Given_Names': data.gn,
-                    '8138573-Family_Name': data.fn,
-                    '8138573-member_number': data.m,
-                    '8138573-TFN1': tfn.substring(0,3),
-                    '8138573-TFN2': tfn.substring(3,6),
-                    '8138573-TFN3': tfn.substring(6,9),
+                    // Universal Personal Details
+                    'Given names': d.gn, 'First names': d.gn, 'First name': d.gn, 'Given Names': d.gn,
+                    'Family name': d.fn, 'Family Name': d.fn,
+                    'Member number': d.m, 'Member Number': d.m, 'MEMBER number': d.m, 'Media Super member number': d.m, 'Cbus member number': d.m,
+                    'Date of birth day': dobD, 'Date of birth month': dobM, 'Date of birth year': dobY,
+                    '2B - Date of birth day': dobD, '2B - Date of birth month': dobM, '2B - Date of birth year': dobY,
+                    'Email address': d.eml, 'Email Address': d.eml,
+                    'mobile': d.mob, 'mobile1': d.mob, 'Mobile': d.mob, 'Telephone mobile': d.mob, 'step 2 - Telephone mobile': d.mob,
                     
-                    // Step 3 SIGN DATE (8138576 series)
-                    '8138576-Sign_Date_Day': curD,
-                    '8138576-Sign_Date_Month': curM,
-                    '8138576-Sign_Date_Year': curYY, // Correctly fills "26"
+                    // Address Mappings
+                    'Street Number': d.addr, 'Street Name': d.addr, 'Residential address': d.addr, 'Street Number and Name': d.addr, 'street name': d.addr,
+                    'Suburb/town': d.sub, 'resid suburb/town': d.sub,
+                    'State': d.st, 'resid state': d.st,
+                    'Postcode': d.pc, 'resid postcode': d.pc,
+                    
+                    // TFN Slicing
+                    'TFN1': tfn.substring(0,3), 'TFN2': tfn.substring(3,6), 'TFN3': tfn.substring(6,9),
+                    '8138573-TFN1': tfn.substring(0,3), '8138573-TFN2': tfn.substring(3,6), '8138573-TFN3': tfn.substring(6,9),
 
-                    // Standard Address/Contact fields
-                    'Residential address': data.addr,
-                    'Suburb/town': data.sub,
-                    'State': data.st,
-                    'Postcode': data.pc,
-                    'Mobile': data.mob,
-                    'Email address': data.eml,
-                    
-                    // DOB fields (if present as standard names)
-                    'Date of birth day': dobD,
-                    'Date of birth month': dobM,
-                    'Date of birth year': dobY
+                    // Media Super Specific (Numeric IDs)
+                    '8138573-Given_Names': d.gn,
+                    '8138573-Family_Name': d.fn,
+                    '8138573-member_number': d.m,
+
+                    // Signing Date Mappings (Day, Month, Year Fix)
+                    '8138576-Sign_Date_Day': curD, '8138576-Sign_Date_Month': curM, '8138576-Sign_Date_Year': curYY,
+                    'decDD': curD, 'decMM': curM, 'decYYYY': curYYYY,
+                    'Signature DD': curD, 'Signature MM': curM, 'Signature YY': curYY,
+                    'Declaration DD': curD, 'Declaration MM': curM, 'Declaration YY': curYY,
+                    'Member day': curD, 'Member month': curM, 'Member year': curYYYY,
+                    'Step 4 - DD': curD, 'Step 4 - MM': curM, 'Step 4 - YYYY': curYYYY,
+                    'Member declaration date DD': curD, 'Member declaration date MM': curM, 'Member declaration date YY': curYY,
+                    'Step 3 date': curD, 'Step 3 date MM': curM, 'Step 3 date YY': curYY,
+                    '3 Step 3 date': curD, '3 Step 3 date MM': curM, '3 Step 3 date YY': curYY,
+                    '12 form 1 sign DD': curD, '12 form 1 sign MM': curM, '12 form 1 sign YY': curYY,
+                    'Combine - Declaration DD': curD, 'Combine - Declaration MM': curM, 'Combine - Declaration YY': curYY,
+                    'Join - Declaration DD': curD, 'Join - Declaration MM': curM, 'Join - Declaration YY': curYY
                 };
 
                 Object.entries(masterMap).forEach(([k, v]) => {
                     try { form.getTextField(k).setText(v); } catch(e) {}
                 });
 
-                const newFileName = `${fullName} - ${fileName}`;
-                zip.file(newFileName, await pdfDoc.save());
+                zip.file(`${fullName} - ${fileName}`, await pdfDoc.save());
             }
 
             status.innerText = "📦 Creating Pack...";
-            const blob = await zip.generateAsync({type:"blob"});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; 
-            a.download = `${fullName}_MediaSuper.zip`;
-            a.click();
-            status.innerText = "✅ Done! Pack Downloaded.";
+            const content = await zip.generateAsync({type:"blob"});
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(content);
+            link.download = `${fullName}_Forms_Pack.zip`;
+            link.click();
+            status.innerText = "✅ Done! Download Started.";
         } catch (err) {
             status.style.color = "red";
-            status.innerText = `❌ ${err.message}`;
+            status.innerText = `❌ Error: ${err.message}`;
         }
     }
 </script>
