@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Universal Super Assistant Feb 2026</title>
+    <title>Universal Super Assistant - Feb 2026</title>
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
@@ -124,6 +124,7 @@
                 const fileName = item.value;
                 status.innerText = `Fetching: ${fileName}...`;
                 
+                // Pointing to your GitHub structure: /forms/MEDIA/
                 const response = await fetch(`./forms/MEDIA/${fileName}`);
                 if (!response.ok) throw new Error(`File ${fileName} not found.`);
 
@@ -131,48 +132,53 @@
                 const form = pdfDoc.getForm();
 
                 const masterMap = {
-                    // --- GIVEN NAMES VARIATIONS ---
-                    'Given names': d.gn, 'First names': d.gn, 'First name': d.gn, 
-                    'Given Names': d.gn, 'First Names': d.gn, '8138573-Given_Names': d.gn,
+                    // Given Names - Universal Mapping
+                    'Given names': d.gn, 
+                    'First names': d.gn, 
+                    'First name': d.gn, // Fix for investment-choice.pdf
+                    'Given Names': d.gn, 
+                    '8138573-Given_Names': d.gn,
                     
-                    // --- FAMILY NAME VARIATIONS ---
-                    'Family name': d.fn, 'Family Name': d.fn, '8138573-Family_Name': d.fn,
+                    // Family Name - Universal Mapping
+                    'Family name': d.fn, // Fix for investment-choice.pdf
+                    'Family Name': d.fn, 
+                    '8138573-Family_Name': d.fn,
                     
-                    // --- MEMBER NUMBER VARIATIONS ---
+                    // Member Number
                     'Member number': d.m, 'Member Number': d.m, 'MEMBER number': d.m, 
                     'Media Super member number': d.m, 'Cbus member number': d.m, '8138573-member_number': d.m,
                     
-                    // --- DATE OF BIRTH ---
+                    // Date of Birth
                     'Date of birth day': dobD, 'Date of birth month': dobM, 'Date of birth year': dobY,
                     '2B - Date of birth day': dobD, '2B - Date of birth month': dobM, '2B - Date of birth year': dobY,
 
-                    // --- CONTACT INFO ---
-                    'Email address': d.eml, 'Email Address': d.eml, 'Telephone mobile': d.mob, 'mobile': d.mob, 'mobile1': d.mob, 'Mobile': d.mob,
+                    // Contact Details
+                    'Email address': d.eml, 'Email Address': d.eml, 'Telephone mobile': d.mob, 'mobile': d.mob, 'Mobile': d.mob,
                     
-                    // --- ADDRESS (Specifically fixing Opt-in and Investment Choice) ---
-                    'Street Number': d.addr, 'Street Name': d.addr, 'Street name': d.addr, 'street name': d.addr,
+                    // Address Fixes
+                    'Street Number': d.addr, 
+                    'Street Name': d.addr, 
+                    'Street name': d.addr, // Fix for i-want-insurance-cover.pdf
+                    'street name': d.addr, // Fix for investment-choice.pdf
                     'Residential address': d.addr, 'Street Number and Name': d.addr, 
                     'Suburb/town': d.sub, 'State': d.st, 'Postcode': d.pc,
 
-                    // --- TFN ---
+                    // TFN
                     'TFN1': tfn.substring(0,3), 'TFN2': tfn.substring(3,6), 'TFN3': tfn.substring(6,9),
-                    '8138573-TFN1': tfn.substring(0,3), '8138573-TFN2': tfn.substring(3,6), '8138573-TFN3': tfn.substring(6,9),
 
-                    // --- ALL SIGNING DATE VARIATIONS ---
-                    '8138576-Sign_Date_Day': curD, '8138576-Sign_Date_Month': curM, '8138576-Sign_Date_Year': curYY,
-                    'decDD': curD, 'decMM': curM, 'decYYYY': curYYYY,
+                    // Signing Dates
                     'Signature DD': curD, 'Signature MM': curM, 'Signature YY': curYY,
-                    'Declaration DD': curD, 'Declaration MM': curM, 'Declaration YY': curYY,
-                    'Member declaration date DD': curD, 'Member declaration date MM': curM, 'Member declaration date YY': curYY,
-                    'Step 3 date': curD, 'Step 3 date MM': curM, 'Step 3 date YY': curYY,
-                    'Combine - Declaration DD': curD, 'Combine - Declaration MM': curM, 'Combine - Declaration YY': curYY,
-                    'Join - Declaration DD': curD, 'Join - Declaration MM': curM, 'Join - Declaration YY': curYY,
                     'Member day': curD, 'Member month': curM, 'Member year': curYYYY,
-                    '12 form 1 sign DD': curD, '12 form 1 sign MM': curM, '12 form 1 sign YY': curYY
+                    '12 form 1 sign DD': curD, '12 form 1 sign MM': curM, '12 form 1 sign YY': curYY, // Fix for Withdrawal Step 8
+                    'decDD': curD, 'decMM': curM, 'decYYYY': curYYYY,
+                    'Declaration DD': curD, 'Declaration MM': curM, 'Declaration YY': curYY
                 };
 
                 Object.entries(masterMap).forEach(([k, v]) => {
-                    try { form.getTextField(k).setText(v); } catch(e) {}
+                    try { 
+                        const field = form.getTextField(k);
+                        field.setText(v); 
+                    } catch(e) {}
                 });
 
                 zip.file(`${fullName} - ${fileName}`, await pdfDoc.save());
