@@ -124,9 +124,8 @@
                 const fileName = item.value;
                 status.innerText = `Fetching: ${fileName}...`;
                 
-                // GitHub Specific Path
                 const response = await fetch(`./forms/MEDIA/${fileName}`);
-                if (!response.ok) throw new Error(`File ${fileName} not found in /forms/MEDIA/ folder.`);
+                if (!response.ok) throw new Error(`File ${fileName} not found.`);
 
                 const pdfDoc = await PDFLib.PDFDocument.load(await response.arrayBuffer());
                 const form = pdfDoc.getForm();
@@ -158,7 +157,10 @@
                     'Member declaration date DD': curD, 'Member declaration date MM': curM, 'Member declaration date YY': curYY,
                     'Step 3 date': curD, 'Step 3 date MM': curM, 'Step 3 date YY': curYY,
                     'Combine - Declaration DD': curD, 'Combine - Declaration MM': curM, 'Combine - Declaration YY': curYY,
-                    'Join - Declaration DD': curD, 'Join - Declaration MM': curM, 'Join - Declaration YY': curYY
+                    'Join - Declaration DD': curD, 'Join - Declaration MM': curM, 'Join - Declaration YY': curYY,
+                    
+                    // Fix for Step 8 Withdrawal Form
+                    '12 form 1 sign DD': curD, '12 form 1 sign MM': curM, '12 form 1 sign YY': curYY
                 };
 
                 Object.entries(masterMap).forEach(([k, v]) => {
