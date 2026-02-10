@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Media Super Assistant - Feb 2026</title>
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         :root { --media-blue: #005aab; }
         body { font-family: -apple-system, system-ui, sans-serif; background: #f0f4f7; padding: 15px; margin: 0; }
@@ -81,7 +80,7 @@
         </div>
     </div>
 
-    <button class="btn-run" onclick="runBatch()">🚀 Generate Selected Bundle</button>
+    <button class="btn-run" onclick="runBatch()">🚀 Generate Selected Forms</button>
     <div id="status"></div>
 </div>
 
@@ -98,8 +97,7 @@
         if (selected.length === 0) return alert("Select forms first.");
 
         const status = document.getElementById('status');
-        const zip = new JSZip();
-
+        
         const gn = document.getElementById('gn').value.trim();
         const fn = document.getElementById('fn').value.trim();
         const fullName = `${gn} ${fn}`.trim() || "Member";
@@ -122,9 +120,8 @@
         try {
             for (const item of selected) {
                 const fileName = item.value;
-                status.innerText = `Fetching: ${fileName}...`;
+                status.innerText = `Processing: ${fileName}...`;
                 
-                // Pointing to your GitHub structure: /forms/MEDIA/
                 const response = await fetch(`./forms/MEDIA/${fileName}`);
                 if (!response.ok) throw new Error(`File ${fileName} not found.`);
 
@@ -132,44 +129,20 @@
                 const form = pdfDoc.getForm();
 
                 const masterMap = {
-                    // Given Names - Universal Mapping
-                    'Given names': d.gn, 
-                    'First names': d.gn, 
-                    'First name': d.gn, // Fix for investment-choice.pdf
-                    'Given Names': d.gn, 
-                    '8138573-Given_Names': d.gn,
-                    
-                    // Family Name - Universal Mapping
-                    'Family name': d.fn, // Fix for investment-choice.pdf
-                    'Family Name': d.fn, 
-                    '8138573-Family_Name': d.fn,
-                    
-                    // Member Number
+                    'Given names': d.gn, 'First names': d.gn, 'First name': d.gn, 'Given Names': d.gn, '8138573-Given_Names': d.gn,
+                    'Family name': d.fn, 'Family Name': d.fn, '8138573-Family_Name': d.fn,
                     'Member number': d.m, 'Member Number': d.m, 'MEMBER number': d.m, 
                     'Media Super member number': d.m, 'Cbus member number': d.m, '8138573-member_number': d.m,
-                    
-                    // Date of Birth
                     'Date of birth day': dobD, 'Date of birth month': dobM, 'Date of birth year': dobY,
                     '2B - Date of birth day': dobD, '2B - Date of birth month': dobM, '2B - Date of birth year': dobY,
-
-                    // Contact Details
                     'Email address': d.eml, 'Email Address': d.eml, 'Telephone mobile': d.mob, 'mobile': d.mob, 'Mobile': d.mob,
-                    
-                    // Address Fixes
-                    'Street Number': d.addr, 
-                    'Street Name': d.addr, 
-                    'Street name': d.addr, // Fix for i-want-insurance-cover.pdf
-                    'street name': d.addr, // Fix for investment-choice.pdf
+                    'Street Number': d.addr, 'Street Name': d.addr, 'Street name': d.addr, 'street name': d.addr, 
                     'Residential address': d.addr, 'Street Number and Name': d.addr, 
                     'Suburb/town': d.sub, 'State': d.st, 'Postcode': d.pc,
-
-                    // TFN
                     'TFN1': tfn.substring(0,3), 'TFN2': tfn.substring(3,6), 'TFN3': tfn.substring(6,9),
-
-                    // Signing Dates
                     'Signature DD': curD, 'Signature MM': curM, 'Signature YY': curYY,
                     'Member day': curD, 'Member month': curM, 'Member year': curYYYY,
-                    '12 form 1 sign DD': curD, '12 form 1 sign MM': curM, '12 form 1 sign YY': curYY, // Fix for Withdrawal Step 8
+                    '12 form 1 sign DD': curD, '12 form 1 sign MM': curM, '12 form 1 sign YY': curYY,
                     'decDD': curD, 'decMM': curM, 'decYYYY': curYYYY,
                     'Declaration DD': curD, 'Declaration MM': curM, 'Declaration YY': curYY
                 };
@@ -181,23 +154,33 @@
                     } catch(e) {}
                 });
 
-                zip.file(`${fullName} - ${fileName}`, await pdfDoc.save());
+                const pdfBytes = await pdfDoc.save();
+                
+                // Construct Filename: "Given Names Family Name original-filename.pdf"
+                const downloadName = `${fullName} ${fileName}`;
+                
+                // Trigger individual download
+                downloadFile(pdfBytes, downloadName);
             }
 
-            status.innerText = "📦 Creating Pack...";
-            const content = await zip.generateAsync({type:"blob"});
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(content);
-            link.download = `${fullName}_Super_Pack.zip`;
-            link.click();
-            status.innerText = "✅ Done!";
+            status.innerText = "✅ All files generated!";
         } catch (err) {
             status.style.color = "red";
             status.innerText = `❌ Error: ${err.message}`;
         }
     }
+
+    // Helper function to handle individual file downloads
+    function downloadFile(data, name) {
+        const blob = new Blob([data], { type: "application/pdf" });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+    }
 </script>
 </body>
-
 </html>
-
